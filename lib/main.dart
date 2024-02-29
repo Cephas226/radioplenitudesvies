@@ -1,21 +1,17 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:in_app_update/in_app_update.dart';
-import 'package:just_audio_background/just_audio_background.dart';
-import 'package:radioplenitudesvie/pages/dashboard/dashboard_page.dart';
-import 'package:radioplenitudesvie/pages/home/page_manager.dart';
+import 'package:radioplenitudesvie/app_binding.dart';
 import 'audio_helpers/audio_handler.dart';
-import 'audio_helpers/service_locator.dart';
 import 'routes/app_pages.dart';
-import 'routes/app_routes.dart';
 
 int id = 0;
 late AudioHandler audioHandler;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
- // await setupServiceLocator();
+  // await setupServiceLocator();
   audioHandler = await AudioService.init(
     builder: () => AudioPlayerHandler(),
     config: const AudioServiceConfig(
@@ -24,29 +20,7 @@ Future<void> main() async {
       androidNotificationOngoing: true,
     ),
   );
-  checkForUpdate();
   runApp(const MyApp());
-}
-
-
-Future<void> checkForUpdate() async {
-  InAppUpdate.checkForUpdate().then((updateInfo) {
-    if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-      if (updateInfo.immediateUpdateAllowed) {
-        InAppUpdate.performImmediateUpdate().then((appUpdateResult) {
-          if (appUpdateResult == AppUpdateResult.success) {
-            InAppUpdate.performImmediateUpdate();
-          }
-        });
-      } else if (updateInfo.flexibleUpdateAllowed) {
-        InAppUpdate.startFlexibleUpdate().then((appUpdateResult) {
-          if (appUpdateResult == AppUpdateResult.success) {
-            InAppUpdate.completeFlexibleUpdate();
-          }
-        });
-      }
-    }
-  });
 }
 
 class MyApp extends StatefulWidget {
@@ -57,14 +31,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      initialRoute: AppRoutes.SPLASH_SCREEN,
-      getPages: AppPages.list,
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system,
+      enableLog: true,
+      initialRoute: AppPages.INITIAL,
+      defaultTransition: Transition.fade,
+      getPages: AppPages.list,
+      initialBinding: AppBinding(),
+      smartManagement: SmartManagement.keepFactory,
+      title: 'Radio PlenitudeS Vie',
+      builder: EasyLoading.init(),
     );
   }
 }

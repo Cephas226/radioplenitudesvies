@@ -328,6 +328,24 @@ class _WordBreadStories extends StatelessWidget {
   }
 }
 
+Container switcher(){
+   return Container(
+           decoration: BoxDecoration(
+             color: const Color.fromARGB(255, 27, 6, 6),
+             boxShadow: AppDefaults.defaultBoxShadow,
+             borderRadius: AppDefaults.defaulBorderRadius,
+           ),
+           padding: const EdgeInsets.all(5.0),
+      child: Center(
+          child: Text(
+              "Ancienne Version",
+              style: AppText.b1.copyWith(
+                fontSize: 12,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ))));
+}
+
 Row planningAndNotifications (BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.end,

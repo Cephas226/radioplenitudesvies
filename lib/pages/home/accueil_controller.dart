@@ -222,9 +222,28 @@ class AccueilController extends GetxController {
       }
     } finally {
       isShowLoading(false);
+      checkForUpdate();
     }
   }
-
+  Future<void> checkForUpdate() async {
+    InAppUpdate.checkForUpdate().then((updateInfo) {
+      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+        if (updateInfo.immediateUpdateAllowed) {
+          InAppUpdate.performImmediateUpdate().then((appUpdateResult) {
+            if (appUpdateResult == AppUpdateResult.success) {
+              InAppUpdate.performImmediateUpdate();
+            }
+          });
+        } else if (updateInfo.flexibleUpdateAllowed) {
+          InAppUpdate.startFlexibleUpdate().then((appUpdateResult) {
+            if (appUpdateResult == AppUpdateResult.success) {
+              InAppUpdate.completeFlexibleUpdate();
+            }
+          });
+        }
+      }
+    });
+  }
   filterHopeWordList(){
     final filteredItem = hopeWordList.firstWhere(
           (hopeWord) => hopeWord['imagelink'] != null,
