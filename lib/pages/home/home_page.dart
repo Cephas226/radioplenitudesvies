@@ -12,23 +12,13 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:radioplenitudesvie/models/torrent_cover_model.dart';
 import 'package:radioplenitudesvie/pages/dashboard/dashboard_controller.dart';
-import 'package:radioplenitudesvie/pages/home/author_pocket.dart';
-import 'package:radioplenitudesvie/pages/home/home_controller.dart';
-import 'package:radioplenitudesvie/pages/home/show_special_title.dart';
 import 'package:radioplenitudesvie/pages/home/thought_title.dart';
 import 'package:radioplenitudesvie/pages/planning_screen/planning_screen_controller.dart';
 import 'package:text_scroll/text_scroll.dart';
-import '../../consts/app_colors.dart';
 import '../../consts/app_defaults.dart';
-import 'package:rxdart/rxdart.dart';
 import '../../main.dart';
-import '../../main.dart';
-import '../../utils/ui_helper.dart';
-import '../../widget/common.dart';
 import 'accueil_controller.dart';
-import 'hotcast.dart';
 import 'podcast_tile.dart';
 import '../../../consts/app_images.dart';
 import '../../../consts/app_sizes.dart';
@@ -36,10 +26,8 @@ import '../../themes/text.dart';
 
 import 'show_page_details.dart';
 import 'show_title.dart';
-import 'torrent_title.dart';
 
 final AccueilController accueilController = Get.put(AccueilController());
-final HomeController homeController = Get.put(HomeController());
 final DashboardController dashboardController = Get.put(DashboardController());
 final PlanningScreenController planningScreenController =
     Get.put(PlanningScreenController());

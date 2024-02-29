@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:radioplenitudesvie/consts/app_images.dart';
-import 'package:radioplenitudesvie/models/torrent_cover_model.dart';
-import 'package:radioplenitudesvie/pages/dashboard/dashboard_page.dart';
-import 'package:radioplenitudesvie/routes/app_pages.dart';
 import 'package:story_view/controller/story_controller.dart';
 import 'package:story_view/widgets/story_view.dart';
 import '../../../consts/app_defaults.dart';
@@ -15,7 +12,6 @@ import 'package:get/route_manager.dart';
 import '../../audio_helpers/audio_handler.dart';
 import '../../utils/ui_helper.dart';
 import '../dashboard/dashboard_controller.dart';
-import '../torrent_screen/torrent_view.dart';
 
 final DashboardController dashboardController = Get.put(DashboardController());
 

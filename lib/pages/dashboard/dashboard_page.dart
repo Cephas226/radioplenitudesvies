@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,11 +7,9 @@ import 'package:radioplenitudesvie/pages/bible_screen/bible_screen.dart';
 import 'package:radioplenitudesvie/pages/home/video_screen_view.dart';
 import 'package:radioplenitudesvie/pages/torrent_screen/torrent_view.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import '../../widget/player_button.dart';
 import '../home/accueil_controller.dart';
 import '../home/home_controller.dart';
 import '../home/home_page.dart';
-import '../home/show_page_details.dart';
 import '../play_list_screen/play_list_view.dart';
 import 'dashboard_controller.dart';
 

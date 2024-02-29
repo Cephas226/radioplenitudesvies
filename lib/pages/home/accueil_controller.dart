@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:ffi';
 import 'dart:math';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
@@ -8,15 +6,10 @@ import 'package:just_audio/just_audio.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:radioplenitudesvie/api/api-provider.dart';
-import 'package:radioplenitudesvie/models/author.dart';
 import 'package:radioplenitudesvie/models/pod_model.dart';
 import 'package:radioplenitudesvie/models/show.dart';
-import 'package:radioplenitudesvie/models/show_special.dart';
-
 import '../../audio_helpers/audio_handler.dart';
-import '../../models/torrent_pocket.dart';
 import '../../utils/ui_helper.dart';
-import 'package:http/http.dart' as http;
 
 class AccueilController extends GetxController {
   var isLoading = false.obs;
@@ -68,7 +61,12 @@ class AccueilController extends GetxController {
     fetchAllAnnounces(currentYear.value);
     fetchAllShows(currentMonth.value, currentYear.value);
     fetchPlanning(currentDayIndex == 0 ?1 : currentDayIndex-1);
-    songPlayRadio();
+    Future.delayed(const Duration(seconds: 5 ), () {
+      songPlayRadio();
+    });
+    Future.delayed(const Duration(seconds: 30), () {
+      songPlayRadio();
+    });
   }
 
   void getRandomeNumber() {
@@ -104,7 +102,9 @@ class AccueilController extends GetxController {
       print(e);
     }
   }
-
+  launchWithDelay(){
+    checkForUpdate();
+  }
   Future<void> songPlayRadio() async {
     print("****Radio*****");
     final session = await AudioSession.instance;
@@ -216,13 +216,12 @@ class AccueilController extends GetxController {
           );
         }).toList();
         audioSourceList.assignAll(audioSources);
-
         filterHopeWordList();
         filterCulteList();
       }
     } finally {
       isShowLoading(false);
-      checkForUpdate();
+
     }
   }
   Future<void> checkForUpdate() async {
@@ -298,9 +297,10 @@ class AccueilController extends GetxController {
 
   void fetchPlanning(currentDayIndex) async {
     var index = currentDayIndex== 0 ?1 : currentDayIndex-1;
-    print('*****'+index.toString()+"*****");
+
     var results = await RadioWebAPI.fetchPlanning();
-    var header = results![0] as List;
+    if(results!=null){
+    var header = results[0] as List;
     Map<String, dynamic> itemsList = {};
     for (int i =1; i<results.length; i++){
       var rows = results[i] as List;
@@ -319,6 +319,7 @@ class AccueilController extends GetxController {
           });
         });
       }
+    }
     }
     update();
   }

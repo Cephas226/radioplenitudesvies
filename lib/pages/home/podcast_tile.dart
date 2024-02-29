@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import '../../../consts/app_defaults.dart';
 import '../../../consts/app_images.dart';
-import '../../models/pod_model.dart';
 import '../../themes/text.dart';
 import 'package:get/route_manager.dart';
-
-import '../../utils/ui_helper.dart';
 
 class PodcastListTile extends StatelessWidget {
   const PodcastListTile({

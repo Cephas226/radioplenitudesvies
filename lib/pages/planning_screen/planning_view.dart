@@ -1,16 +1,9 @@
 import 'dart:io';
 import 'dart:math';
-
-import 'package:calendar_appbar/calendar_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
-import '../../consts/app_defaults.dart';
-import '../../consts/app_sizes.dart';
-import '../../themes/text.dart';
 import 'package:http/http.dart' as http;
 
 class TorrentScreenView extends StatefulWidget {

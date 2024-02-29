@@ -1,28 +1,19 @@
 import 'dart:convert';
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lottie/lottie.dart';
-import 'package:radioplenitudesvie/models/pod_model.dart';
-import 'package:radioplenitudesvie/models/torrent_cover_model.dart';
 import 'package:radioplenitudesvie/pages/home/home_controller.dart';
 import '../../consts/app_defaults.dart';
 import '../../utils/ui_helper.dart';
 import 'accueil_controller.dart';
 import 'home_page.dart';
-import 'hotcast.dart';
 import 'podcast_tile.dart';
 
 import '../../../consts/app_images.dart';
 import '../../../consts/app_sizes.dart';
 import '../../themes/text.dart';
 import 'package:get/get.dart';
-
-import 'show_title.dart';
-import 'torrent_title.dart';
 
 final AccueilController accueilController = Get.put(AccueilController());
 final HomeController homeController = Get.put(HomeController());

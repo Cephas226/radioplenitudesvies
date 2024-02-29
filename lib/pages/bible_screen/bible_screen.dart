@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:radioplenitudesvie/pages/home/accueil_controller.dart';
-import 'package:radioplenitudesvie/pages/home/author_pocket.dart';
 import '../dashboard/dashboard_controller.dart';
 import '../home/home_page.dart';
 import 'bible_screen_controller.dart';

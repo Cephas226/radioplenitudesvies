@@ -6,13 +6,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:radioplenitudesvie/consts/app_images.dart';
 import 'package:radioplenitudesvie/models/author.dart';
-import 'package:radioplenitudesvie/models/torrent_cover_model.dart';
 import '../../../consts/app_defaults.dart';
 import 'package:get/route_manager.dart';
 
 import '../../themes/text.dart';
-import '../dashboard/dashboard_controller.dart';
-import '../torrent_screen/torrent_view.dart';
 
 class AuthorPocket extends StatelessWidget {
   const AuthorPocket({

@@ -1,16 +1,10 @@
-import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:radioplenitudesvie/models/show.dart';
-import '../../../consts/app_colors.dart';
 import '../../../consts/app_defaults.dart';
 import '../../../consts/app_images.dart';
-import '../../../consts/app_sizes.dart';
-import '../../themes/text.dart';
 import 'package:get/route_manager.dart';
-import 'package:path/path.dart';
 
 class ShowTile extends StatelessWidget {
   const ShowTile({

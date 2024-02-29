@@ -2,7 +2,6 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:in_app_update/in_app_update.dart';
 import 'package:radioplenitudesvie/app_binding.dart';
 import 'audio_helpers/audio_handler.dart';
 import 'routes/app_pages.dart';
