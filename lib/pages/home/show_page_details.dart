@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lottie/lottie.dart';
-import 'package:radioplenitudesvie/pages/home/home_controller.dart';
 import '../../consts/app_defaults.dart';
 import '../../utils/ui_helper.dart';
 import 'accueil_controller.dart';
@@ -16,7 +15,6 @@ import '../../themes/text.dart';
 import 'package:get/get.dart';
 
 final AccueilController accueilController = Get.put(AccueilController());
-final HomeController homeController = Get.put(HomeController());
 final RxInt currentIndex = 0.obs;
 final RxBool isPlaying = false.obs;
 class ShowDetails extends StatelessWidget {

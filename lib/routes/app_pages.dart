@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:radioplenitudesvie/pages/home/home_binding.dart';
+import 'package:radioplenitudesvie/pages/home/home_page.dart';
 import 'package:radioplenitudesvie/pages/home/video_screen_view.dart';
 
 import '../pages/dashboard/dashboard_binding.dart';
@@ -13,8 +13,7 @@ class AppPages {
   static var list = [
     GetPage(
       name: AppRoutes.HOME,
-      page: () => const VideoListScreen(),
-      binding: HomeScreenBinding(),
+      page: () => const HomeScreen(),
     ),
     GetPage(
       name: AppRoutes.DASHBOARD,

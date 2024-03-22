@@ -8,12 +8,10 @@ import 'package:radioplenitudesvie/pages/home/video_screen_view.dart';
 import 'package:radioplenitudesvie/pages/torrent_screen/torrent_view.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../home/accueil_controller.dart';
-import '../home/home_controller.dart';
 import '../home/home_page.dart';
 import '../play_list_screen/play_list_view.dart';
 import 'dashboard_controller.dart';
 
-final HomeController homeController = Get.put(HomeController());
 final AccueilController accueilController = Get.put(AccueilController());
 
 class DashboardPage extends StatelessWidget {
