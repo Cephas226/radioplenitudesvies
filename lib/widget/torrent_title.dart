@@ -1,14 +1,15 @@
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:radioplenitudesvie/pages/dashboard/dashboard_page.dart';
-import '../../../consts/app_defaults.dart';
+import '../../consts/app_defaults.dart';
 import 'package:get/route_manager.dart';
 
-import '../dashboard/dashboard_controller.dart';
-import '../torrent_screen/torrent_view.dart';
+import '../pages/dashboard/dashboard_controller.dart';
+import '../pages/torrent_screen/torrent_view.dart';
 final DashboardController dashboardController = Get.put(DashboardController());
 
 class TorrentCoover extends StatelessWidget {

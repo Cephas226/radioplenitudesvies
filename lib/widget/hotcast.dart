@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../consts/app_colors.dart';
-import '../../../consts/app_defaults.dart';
-import '../../../consts/app_images.dart';
-import '../../../consts/app_sizes.dart';
-import '../../themes/text.dart';
+import '../../consts/app_colors.dart';
+import '../../consts/app_defaults.dart';
+import '../../consts/app_images.dart';
+import '../../consts/app_sizes.dart';
+import '../themes/text.dart';
 import 'package:get/route_manager.dart';
 
 class HotcastTile extends StatelessWidget {

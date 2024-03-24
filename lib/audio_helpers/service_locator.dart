@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
 
-import '../pages/home/page_manager.dart';
+import '../provider/page_manager.dart';
 
 GetIt getIt = GetIt.instance;
 

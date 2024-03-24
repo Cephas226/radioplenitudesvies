@@ -1,29 +1,26 @@
-import 'dart:convert' as convert;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 import 'package:radioplenitudesvie/models/author.dart';
+
 import '../models/pod_model.dart';
+import '../models/show.dart';
 
 class RadioWebAPI {
   static var client = http.Client();
 
- static Future<List<dynamic>> getFeedbackList() async {
-    return await http.get(
-    Uri.parse("https://script.google.com/macros/s/1zRAUid19tkySxx9vtfmU_2eJqOi1Ht-o4WjxMAnCo2ABezrX7bTycnhl/exec")).then((response) {
-      var jsonFeedback = convert.jsonDecode(response.body) as List;
-      return jsonFeedback;
-    });
-  }
-  static Future<List<dynamic>?> fetchPlanning() async {
+  static Future<List<dynamic>?> fetchPodCast(int month, int year) async {
     var response = await client.get(Uri.parse(
-        'https://vpvitservice.pythonanywhere.com/programme/day/'));
+        'http://vpvitservice.pythonanywhere.com/drivefiles/list/mois/$month/annee/$year'));
+
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      return data["files"] as List;
+      return data["files"] as List<dynamic>;
     } else {
       return null;
     }
   }
+
   static Future<List<dynamic>?> fetchAllShows(int month, int year) async {
     var response = await client.get(Uri.parse(
         'http://vpvitservice.pythonanywhere.com/drivefiles/list/mois/$month/annee/$year'));
@@ -119,12 +116,32 @@ class RadioWebAPI {
     }
   }
 
-  static Future<List<dynamic>?> fetchAllShowsPocket(int year) async {
+  static Future<List<Show>?> fetchAllShowsPocket(int year) async {
     var response = await client.get(Uri.parse(
         'http://vpvitservice.pythonanywhere.com/drivefiles/list/imagesemissions/annee/$year'));
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      return data["files"] as List;
+      var showList = <Show>[];
+      for (dynamic show in data["files"]) {
+        if (show is Map<String, dynamic>) {
+          Map<String, dynamic> mapItem2 = show;
+          String showName = mapItem2["name"].toString();
+          String imagelink = mapItem2["imagelink"].toString();
+          mapItem2.forEach((key, value) {
+            Show s = Show(
+                name: showName,
+                imagelink: imagelink,
+                key: basenameWithoutExtension(showName,
+                ));
+            bool showExists = showList.any((show) =>
+            show.name == showName && show.imagelink == imagelink);
+            if (!showExists) {
+              showList.add(s);
+            }
+          });
+        }
+      }
+      return showList;
     } else {
       return null;
     }

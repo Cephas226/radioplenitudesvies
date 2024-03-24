@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:radioplenitudesvie/models/show.dart';
-import '../../../consts/app_defaults.dart';
-import '../../../consts/app_images.dart';
+import '../../consts/app_defaults.dart';
+import '../../consts/app_images.dart';
 import 'package:get/route_manager.dart';
 
 class ShowTile extends StatelessWidget {

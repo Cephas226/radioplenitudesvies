@@ -6,7 +6,7 @@ import 'package:radioplenitudesvie/models/torrent_model.dart';
 class RadioWebService {
   static var client = http.Client();
 
-  static Future<List<Torrent>?> fetchTorrents() async {
+  static Future<List<Torrent>?> fetchDataFromApI() async {
     var response = await client.get(Uri.parse(
         'https://vpvitservice.pythonanywhere.com/daily-torrent/create/'));
 

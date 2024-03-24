@@ -79,7 +79,7 @@ class _BibleScreenViewState extends State<BibleScreenView> {
                                 margin: const EdgeInsets.all(5),
                                 child: HtmlWidget(
                                     "${chapterVerses.verse} ${chapterVerses.text}",
-                                    textStyle: const TextStyle(height: 1.5,fontSize: 23,fontFamily: "Times New Roman")),
+                                    textStyle: const TextStyle(fontSize: 15)),
                               )
                             : Container();
                       }),
@@ -150,10 +150,9 @@ class BookList extends StatelessWidget {
           backgroundColor: const Color(0xFF924504),
           title: const Text("Liste des livres"),
           elevation: 0,
-          leading:
-          IconButton(
+          leading: IconButton(
               onPressed: () => {
-              Get.offNamedUntil('/', (route) => false)
+                    Get.back(),
                   },
               icon: const Icon(
                 Icons.arrow_back,
@@ -175,46 +174,32 @@ class BookList extends StatelessWidget {
                           itemBuilder: (context, index) {
                             return Column(
                               children: [
-                                GestureDetector(
-                                  child: ListTile(
-                                    title: Text(bibleScreenController
-                                        .booksList[index].longName
-                                        .toString()[0]
-                                        .toUpperCase() +
-                                        bibleScreenController
-                                            .booksList[index].longName
-                                            .toString()
-                                            .substring(1)),
-                                    trailing: IconButton(
-                                        onPressed: () => {
-                                          bibleScreenController.loadChapters(
-                                              bibleScreenController
-                                                  .booksList[index].shortName
-                                                  .toString()),
-                                          Get.to(() => BookDetails(
-                                              bookLongName: bibleScreenController
-                                                  .booksList[index].longName.toString(),
-                                              bookShortName: bibleScreenController
-                                                  .booksList[index].shortName
-                                                  .toString()))
-                                        },
-                                        icon: const Icon(
-                                          Icons.arrow_forward_ios,
-                                          color: Color(0xFF924504),
-                                        )),
-                                  ),
-                                  onTap: () => {
-                                    bibleScreenController.loadChapters(
-                                        bibleScreenController
-                                            .booksList[index].shortName
-                                            .toString()),
-                                    Get.to(() => BookDetails(
-                                        bookLongName: bibleScreenController
-                                            .booksList[index].longName.toString(),
-                                        bookShortName: bibleScreenController
-                                            .booksList[index].shortName
-                                            .toString()))
-                                  },
+                                ListTile(
+                                  title: Text(bibleScreenController
+                                          .booksList[index].longName
+                                          .toString()[0]
+                                          .toUpperCase() +
+                                      bibleScreenController
+                                          .booksList[index].longName
+                                          .toString()
+                                          .substring(1)),
+                                  trailing: IconButton(
+                                      onPressed: () => {
+                                            bibleScreenController.loadChapters(
+                                                bibleScreenController
+                                                    .booksList[index].shortName
+                                                    .toString()),
+                                            Get.to(() => BookDetails(
+                            bookLongName: bibleScreenController
+                                .booksList[index].longName.toString(),
+                                                bookShortName: bibleScreenController
+                                                    .booksList[index].shortName
+                                                    .toString()))
+                                          },
+                                      icon: const Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: Color(0xFF924504),
+                                      )),
                                 ),
                                 const Divider()
                               ],

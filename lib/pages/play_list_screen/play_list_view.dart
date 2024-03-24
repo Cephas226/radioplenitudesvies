@@ -5,12 +5,11 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:radioplenitudesvie/pages/home/accueil_controller.dart';
-import 'package:radioplenitudesvie/pages/play_list_screen/play_list_screen_controller.dart';
 
 import '../../consts/app_defaults.dart';
 import '../../consts/app_images.dart';
 import '../../models/author.dart';
+import '../home/accueil_controller.dart';
 import '../home/show_page_details.dart';
 
 class PlayLlistScreenView extends StatefulWidget {
@@ -19,9 +18,7 @@ class PlayLlistScreenView extends StatefulWidget {
   @override
   _PlayLlistScreenViewState createState() => _PlayLlistScreenViewState();
 }
-final PlayLlistScreenController playLlistScreenController = Get.put(PlayLlistScreenController());
-final AccueilController accueilController = Get.put(AccueilController());
-
+final AccueilController accueil = Get.put(AccueilController());
 class _PlayLlistScreenViewState extends State<PlayLlistScreenView> {
   @override
   Widget build(BuildContext context) {
@@ -35,7 +32,7 @@ class _PlayLlistScreenViewState extends State<PlayLlistScreenView> {
             padding: const EdgeInsets.all(10.0),
             child:
             GridView.builder(
-              itemCount: playLlistScreenController.authorList.length,
+              itemCount: accueil.authorList.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 5.0,
@@ -45,20 +42,20 @@ class _PlayLlistScreenViewState extends State<PlayLlistScreenView> {
                 return
                   InkWell(
                     onTap: ()=>{
-                      accueilController.resetPodcastList(),
-                      playLlistScreenController.authorList[index].id,
-                      accueilController.isPodCastPlaying.value = false,
-                      accueilController.updateFilteredTargetedSongString(playLlistScreenController.authorList[index].id),
-                Get.to(() => ShowDetails(playLlistScreenController.authorList[index].imagelink))
+                      accueil.resetPodcastList(),
+                      accueil.authorList[index].id,
+                      accueil.isPodCastPlaying.value = false,
+                      accueil.updateFilteredTargetedSongString(accueil.authorList[index].id),
+                Get.to(() => ShowDetails(accueil.authorList[index].imagelink))
                   },
                       child: Stack(
                     children: [
                       AspectRatio(
                         aspectRatio: 9 / 9,
-                        child: playLlistScreenController.authorList[index].imagelink.isNotEmpty
+                        child: accueil.authorList[index].imagelink.isNotEmpty
                             ? CachedNetworkImage(
                           fit: BoxFit.cover,
-                          imageUrl: playLlistScreenController.authorList[index].imagelink,
+                          imageUrl: accueil.authorList[index].imagelink,
                           placeholder: (context, url) => const SpinKitThreeBounce(
                             color: Colors.redAccent,
                             size: 50.0,
@@ -81,7 +78,7 @@ class _PlayLlistScreenViewState extends State<PlayLlistScreenView> {
                           boxShadow: AppDefaults.defaultBoxShadow,
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        child:  Text(playLlistScreenController.authorList[index].name,
+                        child:  Text(accueil.authorList[index].name,
                             style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
                       ))
                     ],

@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -7,7 +8,7 @@ import '../../consts/app_defaults.dart';
 import '../../utils/ui_helper.dart';
 import 'accueil_controller.dart';
 import 'home_page.dart';
-import 'podcast_tile.dart';
+import '../../widget/podcast_tile.dart';
 
 import '../../../consts/app_images.dart';
 import '../../../consts/app_sizes.dart';
@@ -126,7 +127,7 @@ class ShowDetails extends StatelessWidget {
               ],
             ),
             accueilController.isPodCastPlaying.value?
-            Positioned(left: 0, right: 0, bottom: 5, child: ShowBannerPodcast(
+            Positioned(left: 0, right: 0, bottom: 5, child: showBannerPodcast(
                 const Utf8Decoder()
                     .convert(accueilController.currentEmissionName.toString().codeUnits))):Container()
           ],

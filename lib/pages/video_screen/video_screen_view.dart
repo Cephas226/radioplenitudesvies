@@ -23,7 +23,7 @@ class _VideoListScreenState extends State<VideoListScreen> {
   @override
   void initState() {
     super.initState();
-   // _fetchVideos();
+    _fetchVideos();
   }
 
   _fetchVideos() async {

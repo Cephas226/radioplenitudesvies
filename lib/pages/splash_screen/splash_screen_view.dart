@@ -25,8 +25,7 @@ class SplashScreenView extends GetView<SplashScreenController> {
                     alignment: Alignment.center,
                   ),
                 ),
-                const
-                Positioned(
+                const Positioned(
                     bottom: 0.0,
                     right: 0.0,
                     left: 0.0,

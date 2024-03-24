@@ -16,7 +16,7 @@ class TorrentScreenController extends GetxController {
     isLoading(true);
     try {
       isLoading(true);
-      var articleTemp = await RadioWebService.fetchTorrents();
+      var articleTemp = await RadioWebService.fetchDataFromApI();
       if (articleTemp != null) {
         torrents(articleTemp
             .where((torrent) => torrent.date == selectedDate.toString())

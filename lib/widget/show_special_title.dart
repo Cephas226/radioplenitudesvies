@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import '../../../consts/app_defaults.dart';
-import '../../../consts/app_images.dart';
-import '../../models/pod_model.dart';
-import '../../themes/text.dart';
+import '../../consts/app_defaults.dart';
+import '../../consts/app_images.dart';
+import '../models/pod_model.dart';
+import '../themes/text.dart';
 import 'package:get/route_manager.dart';
 import 'package:path/path.dart';
 
@@ -63,28 +63,7 @@ class ShowSpecialTile extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        basenameWithoutExtension(
-                            const Utf8Decoder().convert(showSpecial.name.codeUnits)),
-                        style: AppText.b1.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            )
+
           ],
         ),
       ),

@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
-import '../../../consts/app_defaults.dart';
-import '../../../consts/app_images.dart';
-import '../../themes/text.dart';
+import '../../consts/app_defaults.dart';
+import '../../consts/app_images.dart';
+import '../themes/text.dart';
 import 'package:get/route_manager.dart';
 
 class PodcastListTile extends StatelessWidget {

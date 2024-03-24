@@ -4,7 +4,7 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:radioplenitudesvie/pages/bible_screen/bible_screen.dart';
-import 'package:radioplenitudesvie/pages/home/video_screen_view.dart';
+import 'package:radioplenitudesvie/pages/video_screen/video_screen_view.dart';
 import 'package:radioplenitudesvie/pages/torrent_screen/torrent_view.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../home/accueil_controller.dart';
@@ -45,7 +45,7 @@ class DashboardPage extends StatelessWidget {
                           left: 0,
                           right: 0,
                           bottom: 2,
-                          child: ShowBannerPodcast(const Utf8Decoder().convert(
+                          child: showBannerPodcast(const Utf8Decoder().convert(
                               accueilController.currentEmissionName
                                   .toString()
                                   .codeUnits)))
@@ -53,7 +53,7 @@ class DashboardPage extends StatelessWidget {
                           left: 0,
                           right: 0,
                           bottom: 2,
-                          child: ShowBannerPodcast(
+                          child: showBannerPodcast(
                               accueilController.currentRadioName.toString())),
                 ]))),
             bottomNavigationBar: BottomNavyBar(
@@ -80,7 +80,7 @@ class DashboardPage extends StatelessWidget {
                   ),
                   BottomNavyBarItem(
                     icon: const Icon(Icons.queue_music_rounded),
-                    title: const Text('Torrent de vie'),
+                    title: const Text('Playlist'),
                     activeColor: Colors.blue,
                     inactiveColor: Colors.grey,
                   ),

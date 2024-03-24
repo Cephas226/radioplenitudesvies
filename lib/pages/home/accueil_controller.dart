@@ -4,10 +4,11 @@ import 'package:audio_session/audio_session.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:get/get.dart';
-import 'package:path/path.dart';
 import 'package:radioplenitudesvie/api/api-provider.dart';
+import 'package:radioplenitudesvie/models/author.dart';
 import 'package:radioplenitudesvie/models/pod_model.dart';
 import 'package:radioplenitudesvie/models/show.dart';
+
 import '../../audio_helpers/audio_handler.dart';
 import '../../utils/ui_helper.dart';
 
@@ -16,12 +17,11 @@ class AccueilController extends GetxController {
   var isTorrentLoading = false.obs;
   var isPocketLoading = false.obs;
   var isShowLoading = false.obs;
-  var isSpeacialShowLoading = true.obs;
+  var isSpeacialShowLoading = false.obs;
   var isAnnounceLoading = false.obs;
   var isAuthorSongLoading = false.obs;
   RxInt currentYear = RxInt(DateTime.now().year);
   RxInt currentMonth = RxInt(DateTime.now().month);
-  //var isPlaying = false.obs;
   var isPodCastPlaying = false.obs;
   var shouldScroll = false.obs;
   var metadata = <String>[].obs;
@@ -30,9 +30,9 @@ class AccueilController extends GetxController {
   var audioSourceList = <dynamic>[].obs;
   var audioPodSourceList = <dynamic>[].obs;
   var tempoPodCastList = <dynamic>[].obs;
-  var planningItems = <dynamic>[].obs;
   var tempoSpecialPodCastList = <PodCast>[].obs;
   var torrentList = <dynamic>[].obs;
+  var authorList = <Author>[].obs;
   var specialPodCastList = <dynamic>[].obs;
   var podCastsList = <dynamic>[].obs;
   var showList = <Show>[].obs;
@@ -43,32 +43,36 @@ class AccueilController extends GetxController {
   var wordTextList = <dynamic>[].obs;
   var adsTempList = <dynamic>[].obs;
   var currentIndex = 0.obs;
-  var duration = ''.obs;
+
   var hopeWordCoverLink = ''.obs;
   var wordTextCoverLink = ''.obs;
-  var position = ''.obs;
+  Rx<Duration> duration =  const Duration(seconds: 0).obs;
+  Rx<Duration> position =  const Duration(seconds: 0).obs;
+
   var streamTitle = ''.obs;
   var currentValue = 0.0.obs;
   var currentEmissionName = ''.obs;
   var currentRadioName = ''.obs;
   RxInt randomNumber = 0.obs;
   var max = 0.0.obs;
-  var currentDayIndex = DateTime.now().weekday;
+
   @override
   Future<void> onInit() async {
     super.onInit();
-    fetchAllShowsPocket(currentYear.value);
     fetchAllAnnounces(currentYear.value);
     fetchAllShows(currentMonth.value, currentYear.value);
-    fetchPlanning(currentDayIndex == 0 ?1 : currentDayIndex-1);
-    Future.delayed(const Duration(seconds: 5 ), () {
+    fetchAllSpecialShows(currentYear.value.toString());
+    fetchAllShowsPocket(currentYear.value);
+    fetchAllSongAuthors();
+    fetchAllTorrent(currentYear.value);
+    Future.delayed(const Duration(seconds: 5), () {
       songPlayRadio();
     });
-    Future.delayed(const Duration(seconds: 30), () {
-      songPlayRadio();
+    Future.delayed(const Duration(minutes: 1), () {
+      checkForUpdate();
     });
   }
-
+  
   void getRandomeNumber() {
     randomNumber.value = Random().nextInt(7);
   }
@@ -80,9 +84,11 @@ class AccueilController extends GetxController {
   }
 
   void songPlayPodCast(String uri, int index, String title) {
+    print('$uri$title');
     currentIndex.value = index;
     isPodCastPlaying.value = true;
     currentEmissionName.value = title;
+
     try {
       tpvPlayer.setAudioSource(
         AudioSource.uri(
@@ -102,9 +108,7 @@ class AccueilController extends GetxController {
       print(e);
     }
   }
-  launchWithDelay(){
-    checkForUpdate();
-  }
+
   Future<void> songPlayRadio() async {
     print("****Radio*****");
     final session = await AudioSession.instance;
@@ -141,12 +145,12 @@ class AccueilController extends GetxController {
     try {
       tpvPlayer.durationStream.listen((d) {
         if (d != null) {
-          duration.value = d.toString().split(".")[0];
+          duration.value = d;
           max.value = d.inSeconds.toDouble();
         }
       });
       tpvPlayer.positionStream.listen((p) {
-        position.value = p.toString().split(".")[0];
+        position.value = p;
         currentValue.value = p.inSeconds.toDouble();
       });
     } catch (e) {
@@ -156,20 +160,33 @@ class AccueilController extends GetxController {
 
   Future<void> pause() async {
     await tpvPlayer.pause();
-    //isPlaying.value = false;
+  }
+  void next() {
+    if (currentIndex.value + 1 != 6) {
+      currentIndex.value++;
+      ProgressiveAudioSource pdcst = audioSourceList[currentIndex.value] as ProgressiveAudioSource;
+      songPlayPodCast(pdcst.uri.toString(),currentIndex.value,pdcst.tag.title.toString());
+    }
+  }
+
+  void back() {
+    print("back");
+    if (currentIndex.value - 1 != -1) currentIndex.value--;
+    ProgressiveAudioSource pdcst = audioSourceList[currentIndex.value] as ProgressiveAudioSource;
+    songPlayPodCast(pdcst.uri.toString(),currentIndex.value,pdcst.tag.title.toString());
   }
 
   Future<void> seekTo(Duration position) async {
     await tpvPlayer.seek(position);
   }
-
+  set setPositionValue(double value)  {
+    tpvPlayer.seek(Duration(seconds: value.toInt()));
+  }
   Future<void> fetchAllShows(int month, int year) async {
+    isShowLoading(true);
     try {
-      isShowLoading(true);
       var results = await RadioWebAPI.fetchAllShows(month, year);
-
       tempoPodCastList(results);
-
       if (results != null) {
         await Future.wait(results.map((item) async {
           if (item is Map<String, dynamic>) {
@@ -221,43 +238,11 @@ class AccueilController extends GetxController {
       }
     } finally {
       isShowLoading(false);
-
     }
-  }
-  Future<void> checkForUpdate() async {
-    InAppUpdate.checkForUpdate().then((updateInfo) {
-      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-        if (updateInfo.immediateUpdateAllowed) {
-          InAppUpdate.performImmediateUpdate().then((appUpdateResult) {
-            if (appUpdateResult == AppUpdateResult.success) {
-              InAppUpdate.performImmediateUpdate();
-            }
-          });
-        } else if (updateInfo.flexibleUpdateAllowed) {
-          InAppUpdate.startFlexibleUpdate().then((appUpdateResult) {
-            if (appUpdateResult == AppUpdateResult.success) {
-              InAppUpdate.completeFlexibleUpdate();
-            }
-          });
-        }
-      }
-    });
-  }
-  filterHopeWordList(){
-    final filteredItem = hopeWordList.firstWhere(
-          (hopeWord) => hopeWord['imagelink'] != null,
-      orElse: () => null,
-    );
-    hopeWordCoverLink.value = filteredItem != null ? filteredItem['imagelink'].toString() : '';
-  }
-
-  filterCulteList(){
-    final filteredItem = wordTextList[0];
-    wordTextCoverLink.value = filteredItem != null ? filteredItem['imagelink'].toString() : '';
   }
 
   Future<void> fetchAllSpecialShows(String year) async {
-    //isSpeacialShowLoading(true);
+    isSpeacialShowLoading(true);
     try {
       var results = await RadioWebAPI.fetchAllSpecialShows(year);
       tempoSpecialPodCastList(results);
@@ -267,15 +252,11 @@ class AccueilController extends GetxController {
   }
 
   Future<void> fetchAllAnnounces(int year) async {
+    isAnnounceLoading(true);
     try {
-      isAnnounceLoading(true);
       var results = await RadioWebAPI.fetchAllAnnounces(year);
       announceList(results);
-    }
-    catch (e){
-      print('Error while getting data is $e');
-    }
-    finally {
+    } finally {
       isAnnounceLoading(false);
     }
   }
@@ -290,68 +271,22 @@ class AccueilController extends GetxController {
     }
   }
 
-  String getSelectedDay(int currentDayIndex) {
-    List<String> frenchDays = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
-    return frenchDays[currentDayIndex-1];
-  }
-
-  void fetchPlanning(currentDayIndex) async {
-    var index = currentDayIndex== 0 ?1 : currentDayIndex-1;
-
-    var results = await RadioWebAPI.fetchPlanning();
-    if(results!=null){
-    var header = results[0] as List;
-    Map<String, dynamic> itemsList = {};
-    for (int i =1; i<results.length; i++){
-      var rows = results[i] as List;
-      var cols = [];
-      for (int j =1; j<rows.length; j++){
-        cols.add(rows[j]);
-      }
-      itemsList[rows[0].toString()] = cols;
-    }
-    for (int k =1; k<header.length; k++){
-      if(k==index){
-        itemsList.forEach((key, value) {
-          planningItems.add({
-            "hour": key,
-            "emission": value[k],
-          });
-        });
-      }
-    }
-    }
-    update();
-  }
-
   Future<void> fetchAllShowsPocket(int year) async {
+    isPocketLoading(true);
     try {
-      isPocketLoading(true);
       var results = await RadioWebAPI.fetchAllShowsPocket(year);
-      await Future.wait(results!.map((show) async {
-        if (show is Map<String, dynamic>) {
-          Map<String, dynamic> mapItem2 = show;
-          String showName = mapItem2["name"].toString();
-          String imagelink = mapItem2["imagelink"].toString();
-
-          Show s = Show(
-            name: showName,
-            imagelink: imagelink,
-            key: basenameWithoutExtension(showName),
-          );
-
-          bool showExists = showList.any((show) =>
-          show.name == showName && show.imagelink == imagelink);
-
-          if (!showExists) {
-            showList.add(s);
-          }
-        }
-      }));
-    } catch (e) {
-      print('Error while getting data is $e');
+      showList(results);
     } finally {
       isPocketLoading(false);
+    }
+  }
+
+  Future<void> fetchAllSongAuthors() async {
+    try {
+      var results = await RadioWebAPI.fetchAllSongAuthors();
+      authorList(results);
+    } finally {
+      isAuthorSongLoading(false);
     }
   }
 
@@ -387,6 +322,7 @@ class AccueilController extends GetxController {
   }
 
   Future<void> updateFilteredShowSpecial(String filterKey) async {
+    isLoading(true);
     try {
       var results = await RadioWebAPI.fetchAllTargetedShows(filterKey);
       podCastsList(results);
@@ -401,10 +337,12 @@ class AccueilController extends GetxController {
       }).toList();
       audioPodSourceList.assignAll(audioSources);
     } finally {
+      isLoading(false);
     }
   }
 
   Future<void> updateFilteredTargetedSongString(String filterKey) async {
+    isLoading(true);
     try {
       podCastsList.clear();
       var results = await RadioWebAPI.fetchAllTargetedSong(filterKey);
@@ -421,11 +359,52 @@ class AccueilController extends GetxController {
       audioPodSourceList.assignAll(audioSources);
       update();
     } finally {
+      isLoading(false);
     }
   }
 
   resetPodcastList() {
     podCastsList.clear();
+  }
+
+  Future<void> checkForUpdate() async {
+    InAppUpdate.checkForUpdate().then((updateInfo) {
+      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+        if (updateInfo.immediateUpdateAllowed) {
+          InAppUpdate.performImmediateUpdate().then((appUpdateResult) {
+            if (appUpdateResult == AppUpdateResult.success) {
+              InAppUpdate.performImmediateUpdate();
+            }
+          });
+        } else if (updateInfo.flexibleUpdateAllowed) {
+          InAppUpdate.startFlexibleUpdate().then((appUpdateResult) {
+            if (appUpdateResult == AppUpdateResult.success) {
+              InAppUpdate.completeFlexibleUpdate();
+            }
+          });
+        }
+      }
+    });
+  }
+  filterHopeWordList(){
+    final filteredItem = hopeWordList.firstWhere(
+          (hopeWord) => hopeWord['imagelink'] != null,
+      orElse: () => null,
+    );
+
+    hopeWordCoverLink.value =
+    filteredItem != null ? filteredItem['imagelink'].toString() : '';
+  }
+  filterCulteList(){
+    final filteredItem = wordTextList[0];
+    wordTextCoverLink.value =
+    filteredItem != null ? filteredItem['imagelink'].toString() : '';
+  }
+  String formattedDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 
 }
