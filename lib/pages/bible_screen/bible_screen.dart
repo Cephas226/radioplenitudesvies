@@ -48,8 +48,9 @@ class _BibleScreenViewState extends State<BibleScreenView> {
                 )),
             elevation: 0,
             title: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                pageTitle("Bible", Colors.black,0),
                 Obx(
                   () => InkWell(
                       onTap: () => {
@@ -84,52 +85,6 @@ class _BibleScreenViewState extends State<BibleScreenView> {
                             : Container();
                       }),
                 ),
-              /*  Container(
-                  margin: const EdgeInsets.only(bottom: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.black,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(1.0),
-                          child: IconButton(
-                              onPressed: () => {
-                                    bibleScreenController.loadPreviousChapter(
-                                        bibleScreenController.currentBook
-                                            .toString(),
-                                        bibleScreenController.currentChapter
-                                            .toString())
-                                  },
-                              icon: const Icon(Icons.arrow_back,
-                                  color: Colors.white)),
-                        ),
-                      ),
-                      Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.black,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(1.0),
-                          child: IconButton(
-                              onPressed: () => {
-                                    bibleScreenController.loadNextChapter(
-                                        bibleScreenController.currentBook
-                                            .toString(),
-                                        bibleScreenController.currentChapter
-                                            .toString())
-                                  },
-                              icon: const Icon(Icons.arrow_forward,
-                                  color: Colors.white)),
-                        ),
-                      )
-                    ],
-                  ),
-                )*/
               ],
             )),
       ),

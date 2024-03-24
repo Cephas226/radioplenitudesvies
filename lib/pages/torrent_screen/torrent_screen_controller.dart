@@ -4,7 +4,7 @@ import 'package:radioplenitudesvie/models/torrent_model.dart';
 
 class TorrentScreenController extends GetxController {
   var torrents = <Torrent>[].obs;
-  var isLoading = true.obs;
+  var isLoading = false.obs;
 
   @override
   void onInit() {
@@ -12,8 +12,7 @@ class TorrentScreenController extends GetxController {
     fetchTorrents(DateTime.now().toString().split(' ')[0]);
   }
 
-  void fetchTorrents(selectedDate) async {
-    isLoading(true);
+  Future<void> fetchTorrents(selectedDate) async {
     try {
       isLoading(true);
       var articleTemp = await RadioWebService.fetchDataFromApI();

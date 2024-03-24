@@ -30,7 +30,7 @@ class DashboardPage extends StatelessWidget {
                     child: IndexedStack(
                       index: controller.tabIndex.value,
                       children: [
-                        const HomeScreen(),
+                          HomeScreen(),
                         TorrentScreenView(
                             selectedDate: DateTime.now(),
                             lastDate: DateTime.now()),
@@ -48,13 +48,13 @@ class DashboardPage extends StatelessWidget {
                           child: showBannerPodcast(const Utf8Decoder().convert(
                               accueilController.currentEmissionName
                                   .toString()
-                                  .codeUnits)))
+                                  .codeUnits),context))
                       : Positioned(
                           left: 0,
                           right: 0,
                           bottom: 2,
                           child: showBannerPodcast(
-                              accueilController.currentRadioName.toString())),
+                              accueilController.currentRadioName.toString(),context)),
                 ]))),
             bottomNavigationBar: BottomNavyBar(
                 selectedIndex: controller.tabIndex.value,

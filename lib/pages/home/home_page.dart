@@ -33,36 +33,42 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      body:
-      Obx(() => CustomScrollView(
-        physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()),
-        slivers: <Widget>[
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppSizes.DEFAULT_PADDING * 1.5),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate(
-                <Widget>[
-                  AppSizes.hGap30,
-                  const _CarrousselBar(),
-                  AppSizes.hGap30,
-                  myPlayerRadio(),
-                  emissionBar(),
-                  recentPodCast(),
-                  lifeWord(),
-                  ourReplay(),
-                  AppSizes.hGap50,
-                ],
-              ),
-            ),
-          ),
-        ],
-      ))
-    );
+    return
+      RefreshIndicator(
+        onRefresh: accueilController.refreshList,
+        child:
+        Obx(() => Scaffold(
+            backgroundColor: accueilController.buttonColor.value == Colors.white ? Colors.black : Colors.white,
+            extendBodyBehindAppBar: true,
+            body:
+            CustomScrollView(
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
+              slivers: <Widget>[
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppSizes.DEFAULT_PADDING * 1.5),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate(
+                      <Widget>[
+                        AppSizes.hGap30,
+                        pageTitle("Home",Colors.black,20),
+                        const _CarrousselBar(),
+                        AppSizes.hGap30,
+                        myPlayerRadio(),
+                        emissionBar(),
+                        recentPodCast(),
+                        lifeWord(),
+                        ourReplay(),
+                        AppSizes.hGap50,
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ))
+        )
+      );
   }
 }
 
@@ -108,7 +114,7 @@ class _CarrousselBar extends StatelessWidget {
   }
 }
 
-Widget showBannerPodcast(String textEmission) {
+Widget showBannerPodcast(String textEmission,BuildContext context) {
   return
     Container(
     decoration: BoxDecoration(
@@ -120,151 +126,152 @@ Widget showBannerPodcast(String textEmission) {
     child:
     Column(
           children: [
-            Row(
-              children: [
-                ClipRRect(
-                  borderRadius: AppDefaults.defaulBorderRadius,
-                  child: SizedBox(
-                    width: Get.width * 0.1,
-                    child: AspectRatio(
-                      aspectRatio: 4 / 4,
-                      child: Image.asset(
-                        AppImages.COVER,
-                        fit: BoxFit.cover,
+                Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: AppDefaults.defaulBorderRadius,
+                      child: SizedBox(
+                        width: Get.width * 0.1,
+                        child: AspectRatio(
+                          aspectRatio: 4 / 4,
+                          child: Image.asset(
+                            AppImages.COVER,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
-                      child: TextScroll(textEmission,
-                        style: AppText.b1.copyWith(
-                          fontSize: 12,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        velocity: const Velocity(
-                            pixelsPerSecond: Offset(25, 0)),
-                      ))
-                ),
-                !accueilController.isPodCastPlaying.value?
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    StreamBuilder<PlaybackState>(
-                      stream: audioHandler.playbackState,
-                      builder: (context, snapshot) {
-                        final playbackState = snapshot.data;
-                        final processingState = playbackState?.processingState;
-                        final playing = playbackState?.playing;
-                        if (processingState == AudioProcessingState.loading ||
-                            processingState == AudioProcessingState.buffering) {
-                          return const SpinKitThreeBounce(
-                            color: Colors.redAccent,
-                            size: 50.0,
-                          );
-                        } else if (playing != true) {
-                          return IconButton(
-                            icon: const Icon(Icons.play_arrow,color: Colors.white),
-                            onPressed: audioHandler.play,
-                          );
-                        } else {
-                          return IconButton(
-                            icon: const Icon(Icons.pause,color: Colors.white),
-                            onPressed: audioHandler.pause,
-                          );
-                        }
-                      },
-                    ),
+                    Expanded(
+                        child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            child: TextScroll(textEmission,
+                              style: AppText.b1.copyWith(
+                                fontSize: 12,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              velocity: const Velocity(
+                                  pixelsPerSecond: Offset(25, 0)),
+                            ))),
+                    !accueilController.isPodCastPlaying.value?
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        StreamBuilder<PlaybackState>(
+                          stream: audioHandler.playbackState,
+                          builder: (context, snapshot) {
+                            final playbackState = snapshot.data;
+                            final processingState = playbackState?.processingState;
+                            final playing = playbackState?.playing;
+                            if (processingState == AudioProcessingState.loading ||
+                                processingState == AudioProcessingState.buffering) {
+                              return const SpinKitThreeBounce(
+                                color: Colors.redAccent,
+                                size: 50.0,
+                              );
+                            } else if (playing != true) {
+                              return IconButton(
+                                icon: const Icon(Icons.play_arrow,color: Colors.white),
+                                onPressed: audioHandler.play,
+                              );
+                            } else {
+                              return IconButton(
+                                icon: const Icon(Icons.pause,color: Colors.white),
+                                onPressed: audioHandler.pause,
+                              );
+                            }
+                          },
+                        )
+                      ],
+                    ):Container(),
                   ],
-                ):Container(),
-              ],
-            ),
-
+                ),
             accueilController.isPodCastPlaying.value?
-            Obx(() => Padding(
-              padding: const EdgeInsets.only(right: 15, left: 15),
-              child:
-              Row(
-                children: [
-                  Text(
-              accueilController.formattedDuration(accueilController.position.value),
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Expanded(
-                    child: Slider(
-                        activeColor: Colors.redAccent,
-                        inactiveColor: const Color(0xFFEFEFEF),
-                        value:  accueilController
-                            .position.value.inSeconds.toDouble(),
-                        min: 0.0,
-                        max: accueilController
-                            .duration.value.inSeconds.toDouble() +
-                            1.0,
-                        onChanged: (double value) {
-                          accueilController.setPositionValue = value;
-                        },
-                        onChangeStart: (double value) {
-                          audioHandler.pause();
-                        },
-                        onChangeEnd: (double value) {
-                          audioHandler.play();
-                        }
-                        ),
-                  ),
-                  Text(
-                    accueilController.formattedDuration(accueilController.duration.value),
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            )):Container(),
-            accueilController.isPodCastPlaying.value?
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.skip_previous, color: Colors.white),
-                  onPressed: accueilController.back, // Fonction pour aller à la piste précédente
-                ),
-                StreamBuilder<PlaybackState>(
-                  stream: audioHandler.playbackState,
-                  builder: (context, snapshot) {
-                    final playbackState = snapshot.data;
-                    final processingState = playbackState?.processingState;
-                    final playing = playbackState?.playing;
-                    if (processingState == AudioProcessingState.loading ||
-                        processingState == AudioProcessingState.buffering) {
-                      return const SpinKitThreeBounce(
-                        color: Colors.redAccent,
-                        size: 50.0,
-                      );
-                    } else if (playing != true) {
-                      return IconButton(
-                        icon: const Icon(Icons.play_arrow,color: Colors.white),
-                        onPressed: audioHandler.play,
-                      );
-                    } else {
-                      return IconButton(
-                        icon: const Icon(Icons.pause,color: Colors.white),
-                        onPressed: audioHandler.pause,
-                      );
-                    }
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.skip_next, color: Colors.white),
-                  onPressed: accueilController.next, // Fonction pour passer à la piste suivante
-                ),
-              ],
-            ):Container()
+            Column(
+             children: [
+               Obx(() => Padding(
+                 padding: const EdgeInsets.only(right: 15, left: 15),
+                 child:
+                 Row(
+                   children: [
+                     Text(
+                       accueilController.formattedDuration(accueilController.position.value),
+                       style: const TextStyle(
+                         fontSize: 15,
+                         color: Colors.white,
+                       ),
+                     ),
+                     Expanded(
+                       child: Slider(
+                           activeColor: Colors.redAccent,
+                           inactiveColor: const Color(0xFFEFEFEF),
+                           value:  accueilController
+                               .position.value.inSeconds.toDouble(),
+                           min: 0.0,
+                           max: accueilController
+                               .duration.value.inSeconds.toDouble() +
+                               1.0,
+                           onChanged: (double value) {
+                             accueilController.setPositionValue = value;
+                           },
+                           onChangeStart: (double value) {
+                             audioHandler.pause();
+                           },
+                           onChangeEnd: (double value) {
+                             audioHandler.play();
+                           }
+                       ),
+                     ),
+                     Text(
+                       accueilController.formattedDuration(accueilController.duration.value),
+                       style: const TextStyle(
+                         fontSize: 15,
+                         color: Colors.white,
+                       ),
+                     ),
+                   ],
+                 ),
+               )),
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.center,
+                 children: [
+                   IconButton(
+                     icon: const Icon(Icons.skip_previous, color: Colors.white),
+                     onPressed: accueilController.back, // Fonction pour aller à la piste précédente
+                   ),
+                   StreamBuilder<PlaybackState>(
+                     stream: audioHandler.playbackState,
+                     builder: (context, snapshot) {
+                       final playbackState = snapshot.data;
+                       final processingState = playbackState?.processingState;
+                       final playing = playbackState?.playing;
+                       if (processingState == AudioProcessingState.loading ||
+                           processingState == AudioProcessingState.buffering) {
+                         return const SpinKitThreeBounce(
+                           color: Colors.redAccent,
+                           size: 50.0,
+                         );
+                       } else if (playing != true) {
+                         return IconButton(
+                           icon: const Icon(Icons.play_arrow,color: Colors.white),
+                           onPressed: audioHandler.play,
+                         );
+                       } else {
+                         return IconButton(
+                           icon: const Icon(Icons.pause,color: Colors.white),
+                           onPressed: audioHandler.pause,
+                         );
+                       }
+                     },
+                   ),
+                   IconButton(
+                     icon: const Icon(Icons.skip_next, color: Colors.white),
+                     onPressed: accueilController.next, // Fonction pour passer à la piste suivante
+                   ),
+                 ],
+               )
+             ],
+           ):Container()
           ],
         )
   );
@@ -329,7 +336,9 @@ Widget emissionBar (){
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Nos émissions',style: AppText.h6),
+              Text('🎙️ Nos émissions',style: AppText.h6.copyWith(
+               fontWeight: FontWeight.bold
+              )),
               AppSizes.hGap15,
               SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -361,8 +370,10 @@ Widget recentPodCast() {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Emission récentes',
-            style: AppText.h6,
+            '📻 Emission récentes',
+            style: AppText.h6.copyWith(
+                fontWeight: FontWeight.bold
+            ),
           ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
@@ -414,7 +425,9 @@ Widget lifeWord() {
         children: [
           Text(
             '✝️ Parole de Vie',
-            style: AppText.h6,
+            style: AppText.h6.copyWith(
+                fontWeight: FontWeight.bold
+            ),
           ),
           AppSizes.hGap5,
           Row(
@@ -434,8 +447,10 @@ Widget ourReplay() {
       children: [
         AppSizes.hGap15,
         Text(
-          'Nos replay',
-          style: AppText.h6,
+          '🎧 Nos replay',
+          style: AppText.h6.copyWith(
+              fontWeight: FontWeight.bold
+          ),
         ),
         accueilController.tempoSpecialPodCastList.isNotEmpty
             ?
@@ -461,4 +476,22 @@ Widget ourReplay() {
             ))):Container(),
       ],
     );
+}
+
+Widget pageTitle(String title,Color titleColor,double bottomValue){
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Padding(
+          padding:  EdgeInsets.only(left: 10,bottom: bottomValue),child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 35,
+          fontFamily: "Segoe UI",
+          fontWeight: FontWeight.bold,
+          color: titleColor,
+        ),
+      )),
+    ],
+  );
 }

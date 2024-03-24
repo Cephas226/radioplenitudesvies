@@ -1,6 +1,8 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:get/get.dart';
@@ -23,6 +25,7 @@ class AccueilController extends GetxController {
   RxInt currentYear = RxInt(DateTime.now().year);
   RxInt currentMonth = RxInt(DateTime.now().month);
   var isPodCastPlaying = false.obs;
+  var isShowingPlyWidget = false.obs;
   var shouldScroll = false.obs;
   var metadata = <String>[].obs;
   var monthId = "".obs;
@@ -55,10 +58,15 @@ class AccueilController extends GetxController {
   var currentRadioName = ''.obs;
   RxInt randomNumber = 0.obs;
   var max = 0.0.obs;
+  Rx<Color> buttonColor = const Color(0xFF1C1B1B).obs; // Couleur initiale
+
 
   @override
   Future<void> onInit() async {
     super.onInit();
+    refreshList();
+  }
+  Future<void> refreshList() async{
     fetchAllAnnounces(currentYear.value);
     fetchAllShows(currentMonth.value, currentYear.value);
     fetchAllSpecialShows(currentYear.value.toString());
@@ -72,7 +80,6 @@ class AccueilController extends GetxController {
       checkForUpdate();
     });
   }
-  
   void getRandomeNumber() {
     randomNumber.value = Random().nextInt(7);
   }
@@ -87,6 +94,7 @@ class AccueilController extends GetxController {
     print('$uri$title');
     currentIndex.value = index;
     isPodCastPlaying.value = true;
+    isShowingPlyWidget.value = true;
     currentEmissionName.value = title;
 
     try {
@@ -406,5 +414,7 @@ class AccueilController extends GetxController {
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
     return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
-
+  void toggleColor() {
+    buttonColor.value = buttonColor.value == const Color(0xFF1C1B1B) ? Colors.white : const Color(0xFF1C1B1B);
+  }
 }

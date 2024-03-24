@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:youtube_api/youtube_api.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+import '../home/home_page.dart';
+
 class VideoListScreen extends StatefulWidget {
   const VideoListScreen({super.key});
 
@@ -43,6 +45,7 @@ class _VideoListScreenState extends State<VideoListScreen> {
         extendBodyBehindAppBar: true,
         body: Column(
           children: [
+            pageTitle("Cultes", Colors.black,20),
             CarouselSlider.builder(
               itemCount: videosList.length > 5 ? 5 : videosList.length,
               itemBuilder: (BuildContext context, int index, int realIndex) {

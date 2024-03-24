@@ -129,7 +129,7 @@ class ShowDetails extends StatelessWidget {
             accueilController.isPodCastPlaying.value?
             Positioned(left: 0, right: 0, bottom: 5, child: showBannerPodcast(
                 const Utf8Decoder()
-                    .convert(accueilController.currentEmissionName.toString().codeUnits))):Container()
+                    .convert(accueilController.currentEmissionName.toString().codeUnits),context)):Container()
           ],
         ))
     );
