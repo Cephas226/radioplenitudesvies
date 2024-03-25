@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lottie/lottie.dart';
 import '../../consts/app_defaults.dart';
+import '../../main.dart';
 import '../../utils/ui_helper.dart';
 import 'accueil_controller.dart';
 import 'home_page.dart';
@@ -25,9 +27,201 @@ class ShowDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-        body:
-        Obx(() => Stack(
+    return
+            Scaffold(
+                backgroundColor: Colors.black,
+                body:
+
+                Obx(() =>(
+                    SingleChildScrollView(
+                  child:
+                  Column(
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: AppDefaults.defaultBoxShadow,
+                              borderRadius: AppDefaults.defaulBorderRadius,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ClipRRect(
+                                    borderRadius: AppDefaults.defaulBorderRadius,
+                                    child: InkWell(
+                                      child: SizedBox(
+                                        width: Get.width * 0.9,
+                                        child: AspectRatio(
+                                          aspectRatio: 18 / 15,
+                                          child: Image.asset(
+                                            AppImages.PLAYER,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    )),
+                              ],
+                            ),
+                          ),
+                          Positioned(
+                              left: 0,
+                              right: 0,
+                              top: 100,
+                              child: Column(
+                                children: [
+                                  Obx(() => Padding(
+                                    padding: const EdgeInsets.only(right: 25, left: 25),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          accueilController.formattedDuration(
+                                              accueilController.position.value),
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Slider(
+                                              activeColor: Colors.redAccent,
+                                              inactiveColor: const Color(0xFFEFEFEF),
+                                              value: accueilController
+                                                  .position.value.inSeconds
+                                                  .toDouble(),
+                                              min: 0.0,
+                                              max: accueilController.duration.value.inSeconds
+                                                  .toDouble() +
+                                                  1.0,
+                                              onChanged: (double value) {
+                                                accueilController.setPositionValue = value;
+                                              },
+                                              onChangeStart: (double value) {
+                                                audioHandler.pause();
+                                              },
+                                              onChangeEnd: (double value) {
+                                                audioHandler.play();
+                                              }),
+                                        ),
+                                        Text(
+                                          accueilController.formattedDuration(
+                                              accueilController.duration.value),
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      IconButton(
+                                        icon:
+                                        const Icon(Icons.skip_previous, color: Colors.white),
+                                        onPressed: accueilController
+                                            .back, // Fonction pour aller à la piste précédente
+                                      ),
+                                      StreamBuilder<PlaybackState>(
+                                        stream: audioHandler.playbackState,
+                                        builder: (context, snapshot) {
+                                          final playbackState = snapshot.data;
+                                          final processingState = playbackState?.processingState;
+                                          final playing = playbackState?.playing;
+                                          if (processingState == AudioProcessingState.loading ||
+                                              processingState == AudioProcessingState.buffering) {
+                                            return const SpinKitThreeBounce(
+                                              color: Colors.redAccent,
+                                              size: 50.0,
+                                            );
+                                          } else if (playing != true) {
+                                            return IconButton(
+                                              icon: const Icon(Icons.play_arrow,
+                                                  color: Colors.white),
+                                              onPressed: audioHandler.play,
+                                            );
+                                          } else {
+                                            print(isPlaying);
+                                            return IconButton(
+                                              icon: const Icon(Icons.pause, color: Colors.white),
+                                              onPressed: audioHandler.pause,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.skip_next, color: Colors.white),
+                                        onPressed: accueilController
+                                            .next, // Fonction pour passer à la piste suivante
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              )),
+ Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: myWave(),
+                          ),
+
+                          Positioned(left: 250,
+                              right: 0,
+                              top: 50, child: IconButton(
+                                icon: const Icon(Icons.expand_circle_down_outlined,
+                                    color: Colors.white),
+                                onPressed:()=>{
+                                  Get.back()
+                                },
+                              )
+                          )
+                        ],
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List<Widget>.generate(
+                              accueilController.audioPodSourceList.length, (index) {
+                            var podCast = accueilController.audioPodSourceList[index];
+                            return Obx(() => InkWell(
+                                onTap: () {
+                                  accueilController.songPlayPodCast(
+                                      '${accueilController.audioPodSourceList[index].uri}',
+                                      index,
+                                      '${accueilController.audioPodSourceList[index].tag.title}');
+                                  accueilController.currentEmissionName.value =
+                                      accueilController.audioPodSourceList[index].tag.title
+                                          .toString();
+                                },
+                                child: PodcastListTile(
+                                  podCast: podCast,
+                                  textColor: (accueilController.currentEmissionName.value
+                                      .contains(
+                                      '${accueilController.audioPodSourceList[index].tag.title}'))
+                                      ? Colors.white
+                                      : Colors.white,
+                                  styleContainer: BoxDecoration(
+                                    color: (accueilController.currentEmissionName.value
+                                        .contains(
+                                        '${accueilController.audioPodSourceList[index].tag.title}'))
+                                        ? const Color(0xFF2A2A2A)
+                                        : Colors.transparent,
+                                    boxShadow: AppDefaults.defaultBoxShadow,
+                                    borderRadius: AppDefaults.defaulBorderRadius,
+                                  ),
+                                )));
+                          }),
+                        ),
+                      ),
+                    ],
+                  ),
+                ))));
+            /*Stack(
           children: [
             CustomScrollView(
               physics: const BouncingScrollPhysics(
@@ -131,58 +325,6 @@ class ShowDetails extends StatelessWidget {
                 const Utf8Decoder()
                     .convert(accueilController.currentEmissionName.toString().codeUnits),context)):Container()
           ],
-        ))
-    );
-
-  }
-
-  Container myWave() {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 27, 6, 6),
-        boxShadow: AppDefaults.defaultBoxShadow,
-        borderRadius: AppDefaults.defaulBorderRadius,
-      ),
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: AppDefaults.defaulBorderRadius,
-            child: SizedBox(
-              width: Get.width * 0.1,
-              child: AspectRatio(
-                aspectRatio: 8 / 8,
-                child: Image.asset(
-                  AppImages.COVER,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                          child: Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: SizedBox(
-                                height: 50,
-                                width: double.maxFinite,
-                                child: Lottie.asset('assets/wave.json'),
-                              )))
-                    ],
-                  ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
+        )*/
   }
 }

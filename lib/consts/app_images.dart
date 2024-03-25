@@ -3,6 +3,7 @@ class AppImages {
   static const String LOGIN_HERO = 'assets/login_hero_image.png';
   static const String GOOGLE_LOGO = 'assets/google_logo.png';
   static const String HEADER = 'assets/bg.jpg';
+  static const String PLAYER = 'assets/player.jpeg';
   static const String APPBAR1 = 'assets/appbar1.jpg';
   static const String APPBAR2 = 'assets/appbar2.jpg';
   static const String COVER = 'assets/bgd.jpg';

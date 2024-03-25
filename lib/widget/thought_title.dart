@@ -28,7 +28,8 @@ class ThoughtCoover extends StatelessWidget {
   Widget build(BuildContext context) {
     final storyController = StoryController();
     return InkWell(
-      child: Container(
+      child:
+      Container(
         margin: const EdgeInsets.symmetric(
           horizontal: 5,
           vertical: 5,
@@ -42,7 +43,7 @@ class ThoughtCoover extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ClipRRect(
-                borderRadius: AppDefaults.defaultBottomSheetRadius,
+                borderRadius: AppDefaults.defaulBorderRadius,
                 child: InkWell(
                   child: SizedBox(
                     width: Get.width * 0.9,
