@@ -11,6 +11,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:lottie/lottie.dart';
 import 'package:radioplenitudesvie/pages/dashboard/dashboard_controller.dart';
+import 'package:radioplenitudesvie/pages/home/old_radio_page.dart';
 import 'package:radioplenitudesvie/widget/show_special_title.dart';
 import 'package:radioplenitudesvie/widget/thought_title.dart';
 import 'package:text_scroll/text_scroll.dart';
@@ -53,7 +54,14 @@ class HomeScreen extends StatelessWidget {
                     delegate: SliverChildListDelegate(
                       <Widget>[
                         AppSizes.hGap30,
-                        pageTitle("Home", Colors.black, 20),
+                        pageTitle("Home", Colors.black, 20,Container(child: IconButton(
+                          icon: const Icon(Icons.toggle_off,
+                              color: Colors.black,size: 50),
+                          onPressed: ()=>{
+                            accueilController.initRadioPlayer(),
+                            Get.to(const OldRadio())
+                          },
+                        ))),
                         const _CarrousselBar(),
                         AppSizes.hGap30,
                         myPlayerRadio(),
@@ -154,7 +162,7 @@ Widget showBannerPodcast(String textEmission, BuildContext context) {
                         velocity:
                             const Velocity(pixelsPerSecond: Offset(25, 0)),
                       ))),
-               Row(
+             Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         StreamBuilder<PlaybackState>(
@@ -182,14 +190,21 @@ Widget showBannerPodcast(String textEmission, BuildContext context) {
                               return IconButton(
                                 icon: const Icon(Icons.pause,
                                     color: Colors.white),
-                                onPressed: audioHandler.pause,
+                                onPressed: audioHandler.stop,
                               );
                             }
                           },
-                        )
+                        ),
+                        accueilController.isPodCastPlaying.value?
+                        IconButton(
+                          icon: const Icon(Icons.expand_less,
+                              color: Colors.white),
+                          onPressed: () => {
+                            Get.to(const SecondScreen())
+                          },
+                        ):Container()
                       ],
-                    )
-            ],
+             )],
           ),
           // accueilController.isPodCastPlaying.value?
         ],
@@ -357,18 +372,6 @@ class SecondScreen extends StatefulWidget {
 }
 class _SecondScreenState extends State<SecondScreen> {
 
-  bool showMyWave = false;
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration(seconds: 5), () {
-      setState(() {
-        showMyWave = true;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return
@@ -484,7 +487,6 @@ class _SecondScreenState extends State<SecondScreen> {
                                       onPressed: audioHandler.play,
                                     );
                                   } else {
-                                    print(isPlaying);
                                     return IconButton(
                                       icon: const Icon(Icons.pause, color: Colors.white),
                                       onPressed: audioHandler.pause,
@@ -501,16 +503,25 @@ class _SecondScreenState extends State<SecondScreen> {
                           )
                         ],
                       )),
-
-                  showMyWave
-                      ? Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: myWave(),
-                  )
-                      : Container(),
-
+                 accueilController.isPodCastPlaying.value ?
+                 StreamBuilder<PlaybackState>(
+                    stream: audioHandler.playbackState,
+                    builder: (context, snapshot) {
+                      final playbackState = snapshot.data;
+                      final playing = playbackState?.playing;
+                      if (playing == true) {
+                         return Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: myWave(),
+                        );
+                      }
+                      else {
+                        return Container();
+                      }
+                    },
+                  ):Container(),
                   Positioned(left: 250,
                       right: 0,
                       top: 50, child: IconButton(
@@ -636,7 +647,7 @@ Widget ourReplay() {
   );
 }
 
-Widget pageTitle(String title, Color titleColor, double bottomValue) {
+Widget pageTitle(String title, Color titleColor, double bottomValue,Container icon) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -647,10 +658,11 @@ Widget pageTitle(String title, Color titleColor, double bottomValue) {
             style: TextStyle(
               fontSize: 35,
               fontFamily: "Segoe UI",
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w900,
               color: titleColor,
             ),
           )),
+      icon
     ],
   );
 }

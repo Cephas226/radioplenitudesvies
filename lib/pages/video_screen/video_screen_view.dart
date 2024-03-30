@@ -45,7 +45,7 @@ class _VideoListScreenState extends State<VideoListScreen> {
         extendBodyBehindAppBar: true,
         body: Column(
           children: [
-            pageTitle("Cultes", Colors.black,20),
+            pageTitle("Cultes", Colors.black,20,Container(child: Container())),
             CarouselSlider.builder(
               itemCount: videosList.length > 5 ? 5 : videosList.length,
               itemBuilder: (BuildContext context, int index, int realIndex) {

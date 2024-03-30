@@ -55,18 +55,26 @@ class ShowDetails extends StatelessWidget {
                                       child: SizedBox(
                                         width: Get.width * 0.9,
                                         child: AspectRatio(
-                                          aspectRatio: 18 / 15,
-                                          child: Image.asset(
-                                            AppImages.PLAYER,
+                                          aspectRatio: 13 / 15,
+                                          child: CachedNetworkImage(
                                             fit: BoxFit.cover,
-                                          ),
+                                            imageUrl: headerLink
+                                                .toString(),
+                                            placeholder: (context, url) => const SpinKitThreeBounce(
+                                              color: Colors.redAccent,
+                                              size: 50.0,
+                                            ),
+                                            errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
+                                          )
                                         ),
                                       ),
                                     )),
                               ],
                             ),
                           ),
-                          Positioned(
+                      accueilController.isPodCastPlaying.value?
+                      Positioned(
                               left: 0,
                               right: 0,
                               top: 100,
@@ -125,6 +133,7 @@ class ShowDetails extends StatelessWidget {
                                         onPressed: accueilController
                                             .back, // Fonction pour aller à la piste précédente
                                       ),
+                                      
                                       StreamBuilder<PlaybackState>(
                                         stream: audioHandler.playbackState,
                                         builder: (context, snapshot) {
@@ -160,14 +169,26 @@ class ShowDetails extends StatelessWidget {
                                     ],
                                   )
                                 ],
-                              )),
- Positioned(
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            child: myWave(),
-                          ),
-
+                              )):Container(),
+                          accueilController.isPodCastPlaying.value?
+                          StreamBuilder<PlaybackState>(
+                            stream: audioHandler.playbackState,
+                            builder: (context, snapshot) {
+                              final playbackState = snapshot.data;
+                              final playing = playbackState?.playing;
+                              if (playing == true) {
+                                return Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 0,
+                                  child: myWave(),
+                                );
+                              }
+                              else {
+                                return Container();
+                              }
+                            },
+                          ):Container(),
                           Positioned(left: 250,
                               right: 0,
                               top: 50, child: IconButton(

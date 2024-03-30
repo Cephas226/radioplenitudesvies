@@ -3,15 +3,19 @@ import 'dart:ui';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:get/get.dart';
+import 'package:radio_player/radio_player.dart';
 import 'package:radioplenitudesvie/api/api-provider.dart';
 import 'package:radioplenitudesvie/models/author.dart';
 import 'package:radioplenitudesvie/models/pod_model.dart';
 import 'package:radioplenitudesvie/models/show.dart';
 
 import '../../audio_helpers/audio_handler.dart';
+import '../../consts/app_images.dart';
 import '../../utils/ui_helper.dart';
 
 class AccueilController extends GetxController {
@@ -27,6 +31,7 @@ class AccueilController extends GetxController {
   var isPodCastPlaying = false.obs;
   var isShowingPlyWidget = false.obs;
   var shouldScroll = false.obs;
+  var showMyWave = false.obs;
   var metadata = <String>[].obs;
   var monthId = "".obs;
   var recentPodCastList = <dynamic>[].obs;
@@ -58,6 +63,11 @@ class AccueilController extends GetxController {
   var currentRadioName = ''.obs;
   RxInt randomNumber = 0.obs;
   var max = 0.0.obs;
+
+  final RadioPlayer radioPlayer = RadioPlayer();
+  RxBool isPlaying = false.obs;
+  var metadataverse = <String>[].obs;
+
   Rx<Color> buttonColor = const Color(0xFF1C1B1B).obs; // Couleur initiale
 
 
@@ -66,6 +76,22 @@ class AccueilController extends GetxController {
     super.onInit();
     refreshList();
   }
+  void initRadioPlayer() {
+    radioPlayer.setChannel(
+      title: 'Radio Player',
+      url: 'https://www.radioking.com/play/radioplenitudesvie',
+      imagePath: AppImages.PLAYER,
+    );
+
+    radioPlayer.stateStream.listen((value) {
+      isPlaying.value = value;
+    });
+
+    radioPlayer.metadataStream.listen((value) {
+      metadataverse.value = value;
+    });
+  }
+
   Future<void> refreshList() async{
     fetchAllAnnounces(currentYear.value);
     fetchAllShows(currentMonth.value, currentYear.value);
@@ -168,6 +194,9 @@ class AccueilController extends GetxController {
 
   Future<void> pause() async {
     await tpvPlayer.pause();
+  }
+  Future<void> stop() async {
+    await tpvPlayer.stop();
   }
   void next() {
     if (currentIndex.value + 1 != 6) {

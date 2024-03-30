@@ -96,9 +96,7 @@ class ThoughtCoover extends StatelessWidget {
                                             );
                                         }).toList(),
 
-                                        onStoryShow: (s) {
-                                          storyController.play();
-                                        },
+
                                         onComplete: () {
                                           Navigator.of(context).pop();
                                         },

@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'audio_helpers/audio_handler.dart';
+import 'models/note.dart';
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 
@@ -17,6 +22,10 @@ Future<void> main() async {
       androidNotificationOngoing: true,
     ),
   );
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(NoteAdapter());
+  await Hive.openBox<Note>('notes');
   runApp(const MyApp());
 }
 

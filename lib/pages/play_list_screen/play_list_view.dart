@@ -28,7 +28,7 @@ class _PlayLlistScreenViewState extends State<PlayLlistScreenView> {
         extendBodyBehindAppBar: true,
         body:
         Obx(() =>Column(children: [
-          pageTitle("Playlist", Colors.black,20),
+          pageTitle("Playlist", Colors.black,20,Container(child: Container())),
         Expanded(child:Container(
     padding: const EdgeInsets.all(10.0),
     child:

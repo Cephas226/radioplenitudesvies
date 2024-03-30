@@ -50,7 +50,7 @@ class _BibleScreenViewState extends State<BibleScreenView> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                pageTitle("Bible", Colors.black,0),
+                pageTitle("Bible", Colors.black,0,Container(child: Container())),
                 Obx(
                   () => InkWell(
                       onTap: () => {
