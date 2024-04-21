@@ -1,15 +1,7 @@
-class ProgressiveAudioModel {
-  final Uri uri;
-  final Map<String, String>? headers;
-  final dynamic tag;
-  final Duration? duration;
-  final dynamic options;
+class Station {
+  final String name;
+  final String url;
+  final String genre;
 
-  ProgressiveAudioModel({
-    required this.uri,
-    this.headers,
-    this.tag,
-    this.duration,
-    this.options,
-  });
+  Station({required this.name, required this.url, required this.genre});
 }

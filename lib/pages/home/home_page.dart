@@ -11,6 +11,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:lottie/lottie.dart';
 import 'package:radioplenitudesvie/pages/dashboard/dashboard_controller.dart';
+import 'package:radioplenitudesvie/pages/dashboard/dashboard_page.dart';
 import 'package:radioplenitudesvie/pages/home/old_radio_page.dart';
 import 'package:radioplenitudesvie/widget/show_special_title.dart';
 import 'package:radioplenitudesvie/widget/thought_title.dart';
@@ -53,15 +54,24 @@ class HomeScreen extends StatelessWidget {
                   sliver: SliverList(
                     delegate: SliverChildListDelegate(
                       <Widget>[
+
+                        Align(alignment: Alignment.topRight, child: Text('V${accueilController.packageInfo.buildNumber} ${accueilController.packageInfo.version}',style: const TextStyle(fontSize: 8))),
                         AppSizes.hGap30,
-                        pageTitle("Home", Colors.black, 20,Container(child: IconButton(
-                          icon: const Icon(Icons.toggle_off,
-                              color: Colors.black,size: 50),
-                          onPressed: ()=>{
-                            accueilController.initRadioPlayer(),
-                            Get.to(const OldRadio())
-                          },
-                        ))),
+                        pageTitle("Home", Colors.black, 20,Container(child:
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [const Text('Ancienne vers..',style: TextStyle(overflow: TextOverflow.ellipsis)),
+                                IconButton(
+                                  icon: const Icon(Icons.toggle_off,
+                                      color: Colors.black,size: 50),
+                                  onPressed: ()=>{
+                                    accueilController.stop(),
+                                    accueilController.initRadioPlayer(),
+                                    Get.to(const OldRadio())
+                                  },
+                                )
+                              ],)
+                        )),
                         const _CarrousselBar(),
                         AppSizes.hGap30,
                         myPlayerRadio(),

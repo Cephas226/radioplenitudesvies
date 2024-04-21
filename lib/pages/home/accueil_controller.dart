@@ -8,6 +8,7 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:radio_player/radio_player.dart';
 import 'package:radioplenitudesvie/api/api-provider.dart';
 import 'package:radioplenitudesvie/models/author.dart';
@@ -70,11 +71,24 @@ class AccueilController extends GetxController {
 
   Rx<Color> buttonColor = const Color(0xFF1C1B1B).obs; // Couleur initiale
 
+   PackageInfo packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+    buildSignature: 'Unknown',
+    installerStore: 'Unknown',
+  );
 
   @override
   Future<void> onInit() async {
     super.onInit();
+    _initPackageInfo();
     refreshList();
+  }
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    packageInfo = info;
   }
   void initRadioPlayer() {
     radioPlayer.setChannel(
